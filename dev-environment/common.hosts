@@ -1,0 +1,7 @@
+127.0.0.1 localhost
+
+172.16.0.2 master.vagrant.local master
+
+172.16.1.2 ubuntu2.vagrant.local ubuntu2
+
+172.16.2.2 windows2.vagrant.local windows2
