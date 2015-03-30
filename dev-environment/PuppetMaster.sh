@@ -1,9 +1,13 @@
 #!/bin/bash
 
-echo "sudo su -" > /home/vagrant/.bash_profile
+set -o errexit -o nounset
+
+export DEBIAN_FRONTEND=noninteractive
+
+echo "exec sudo su -" > /home/vagrant/.bash_profile
 
 domain='vagrant.local'
-aptSource="precise"
+aptSource="trusty"
 
 sed -i "s/domain .*/domain $domain/g" /etc/resolv.conf
 sed -i "s/search .*/search $domain/g" /etc/resolv.conf
@@ -36,11 +40,9 @@ if [ ! -f "/etc/apt/sources.list.d/puppetlabs.list" ]; then
 # Puppetlabs products
 deb http://apt.puppetlabs.com $aptSource main
 deb-src http://apt.puppetlabs.com $aptSource main
-
 # Puppetlabs dependencies
 deb http://apt.puppetlabs.com $aptSource dependencies
 deb-src http://apt.puppetlabs.com $aptSource dependencies
-
 # Puppetlabs devel (uncomment to activate)
 # deb http://apt.puppetlabs.com $aptSource devel
 # deb-src http://apt.puppetlabs.com $aptSource devel
@@ -49,18 +51,15 @@ fi
 
 apt-get update -y
 
-puppet_version='3.7.1*'
-apt-get -y --force-yes install \
+puppet_version='3.7.4*'
+RUNLEVEL=1 apt-get -y \
+  -o Dpkg::Options::=--force-confdef \
+  -o Dpkg::Options::=--force-confnew \
+  install \
   puppet="$puppet_version" \
   puppet-common="$puppet_version" \
   puppetmaster="$puppet_version" \
   puppetmaster-common="$puppet_version"
-
-if [ ! $? -eq 0 ]; then
-  exit $?
-fi
-
-apt-get install -y ruby-bundler
 
 hostname=`hostname | awk '{ print tolower($0) }'`
 echo "Configure /etc/puppet/puppet.conf for $hostname"
@@ -74,7 +73,6 @@ ssldir=/var/lib/puppet/ssl
 rundir=/var/run/puppet
 factpath=\$vardir/lib/facter
 templatedir=\$confdir/templates
-modulepath=\$confdir/otmodules:\$confdir/modules
 
 [agent]
 environment=vagrant
@@ -100,12 +98,9 @@ import 'nodes'
 EOF
 fi
 
-apt-get install -y git
-if [ ! $? -eq 0 ]; then
-  exit $?
-fi
+apt-get install -y ruby-bundler
 
-apt-get install -y rubygems
+apt-get install -y git
 if [ ! $? -eq 0 ]; then
   exit $?
 fi
@@ -116,9 +111,6 @@ cd /etc/puppet
 
 echo "Running bundle install"
 bundle install
-if [ ! $? -eq 0 ]; then
-  exit $?
-fi
 
 cd $curDir
 
