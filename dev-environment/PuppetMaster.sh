@@ -32,7 +32,7 @@ if [ -f "/etc/puppet/routes.yaml" ]; then
   rm /etc/puppet/routes.yaml
 fi
 
-apt-key add /vagrant/puppetlabs.gpg
+apt-key add /vagrant/shared/puppetlabs.gpg
 
 if [ ! -f "/etc/apt/sources.list.d/puppetlabs.list" ]; then
   echo "Creating /etc/apt/sources.list.d/puppetlabs.list"

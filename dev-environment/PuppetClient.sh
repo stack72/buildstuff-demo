@@ -33,11 +33,11 @@ deb-src http://apt.puppetlabs.com $aptSource dependencies
 EOF
 fi
 
-apt-key add /vagrant/puppetlabs.gpg
+apt-key add /vagrant/shared/puppetlabs.gpg
 
 apt-get update -y
 
-puppet_version='3.7.1*'
+puppet_version='3.7.4*'
 apt-get install -y \
   puppet="$puppet_version" \
   puppet-common="$puppet_version"
@@ -49,11 +49,6 @@ fi
 apt-get install -y ruby-bundler
 apt-get install -y git
 
-if  [[ ! "$aptSource" == "trusty" ]];
- then
-    apt-get install -y rubygems
-fi
-
 hostname=`hostname | awk '{ print tolower($0) }'`
 echo "Configure puppet.conf"
 cat <<EOF > /etc/puppet/puppet.conf
@@ -64,4 +59,3 @@ pluginsync=true
 autoflush=true
 environment=vagrant
 EOF
-
