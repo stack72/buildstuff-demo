@@ -1,12 +1,20 @@
 NUMBER_OF_BOXES = 1
 
+###############################
+### DO NOT EDIT BELOW THIS LINE
+###############################
+require 'yaml'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'vagrant_helper'))
+
+NUMBER_OF_BOXES_ = VagrantHelper.number_of_boxes('ubuntu', NUMBER_OF_BOXES)
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.provider "virtualbox" do |v|
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
   end
 
-  (2..(NUMBER_OF_BOXES + 1)).each do |i|
+  (2..(NUMBER_OF_BOXES_ + 1)).each do |i|
 
     config.vm.define "Ubuntu#{i}".to_sym do |ubuntu|
       ubuntu.vm.hostname = "Ubuntu#{i}"

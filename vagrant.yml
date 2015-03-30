@@ -1,0 +1,5 @@
+ubuntu:
+   number_of_boxes: 2
+
+windows:
+   number_of_boxes: 2
